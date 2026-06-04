@@ -6,7 +6,7 @@
 Tracking personal finances is tedious — manual spreadsheets and clunky apps. I wanted something effortless: just text what I spent, in plain language, and see it all in a clean dashboard.
 
 ## Solution
-An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"40 night out wells"*), an AI (Claude Sonnet 4.6) interprets it into structured data, stores it in Google Sheets, and a custom web app visualizes everything live — accessible as an app on my phone.
+An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"200 shoes wells"*), an AI (Claude Sonnet 4.6) interprets it into structured data, stores it in Google Sheets, and a custom web app visualizes everything live — accessible as an app on my phone.
 
 ## Architecture
 **Telegram → n8n + Claude Sonnet 4.6 → Google Sheets → Web App (Netlify)**

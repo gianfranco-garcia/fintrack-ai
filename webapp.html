@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="My Finances" />
+<meta name="theme-color" content="#0e1422" />
+<title>My Finances</title>
+<style>
+  :root{ --bg:#f4f6fb; --card:#ffffff; --text:#1a2233; --muted:#6b7280; --line:#e7eaf3; --accent:#2563eb; --accent2:#16a34a; --danger:#ef4444; --shadow:0 6px 20px rgba(20,30,60,.07);}
+  body.dark{ --bg:#0e1422; --card:#161e30; --text:#eaf0ff; --muted:#9aa6c2; --line:#243049; --accent:#3b82f6; --accent2:#22c55e; --danger:#f87171; --shadow:0 8px 26px rgba(0,0,0,.35);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .25s,color .25s;padding-bottom:40px;}
+  .wrap{max-width:760px;margin:0 auto;padding:18px;}
+  .i{width:18px;height:18px;flex:none;}
+  header{display:flex;align-items:center;justify-content:space-between;margin:8px 2px 16px;}
+  header h1{font-size:22px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:9px;}
+  header h1 .i{width:22px;height:22px;color:var(--accent);}
+  .toggle{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:50%;width:40px;height:40px;cursor:pointer;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;}
+  .toggle .sun{display:none;} .toggle .moon{display:block;}
+  body.dark .toggle .sun{display:block;} body.dark .toggle .moon{display:none;}
+  .toggle .i{width:19px;height:19px;}
+  .monthbar{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:16px;}
+  .monthbar .arw{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);color:var(--muted);}
+  .monthbar .mlabel{font-weight:800;font-size:16px;min-width:150px;text-align:center;}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);}
+  .stat .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);}
+  .stat .ic.g{background:color-mix(in srgb,var(--accent2) 16%,transparent);color:var(--accent2);}
+  .stat .lbl{color:var(--muted);font-size:12px;margin-top:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+  .stat .val{font-size:22px;font-weight:800;margin-top:2px;letter-spacing:-.5px;}
+  .stat .val.green{color:var(--accent2);}
+  .savestrip{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;border-radius:18px;padding:18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;box-shadow:var(--shadow);}
+  .savestrip .lbl{font-size:12px;opacity:.95;text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .savestrip .big{font-size:24px;font-weight:800;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px;}
+  .panel h2{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .panel .hint{color:var(--muted);font-size:12px;margin-bottom:14px;}
+  .donut-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:center;}
+  .donut{width:200px;height:200px;border-radius:50%;position:relative;flex-shrink:0;}
+  .donut .hole{position:absolute;inset:24%;background:var(--card);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .25s;}
+  .donut .hole .t{font-size:22px;font-weight:800;letter-spacing:-.5px;}
+  .donut .hole .s{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;min-width:240px;flex:1;}
+  .lg{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;}
+  .lg .amt{margin-left:auto;color:var(--muted);font-weight:700;}
+  .bars{display:flex;flex-direction:column;gap:12px;margin-top:2px;}
+  .bar-row{display:flex;align-items:center;gap:10px;}
+  .bar-row .name{width:150px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .bar-track{flex:1;background:var(--line);border-radius:8px;height:13px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--accent),#60a5fa);}
+  .bar-row .amt{width:48px;text-align:right;font-size:13px;font-weight:700;}
+  .ccard{background:linear-gradient(135deg,#5b6cff,#9b6cff);color:#fff;border-radius:20px;padding:20px;position:relative;overflow:hidden;}
+  .ccard .brand{position:absolute;top:18px;right:20px;font-weight:800;letter-spacing:1px;}
+  .ccard .chip{width:38px;height:28px;border-radius:6px;background:linear-gradient(135deg,#f4d77a,#caa23c);margin-bottom:20px;}
+  .ccard .ln{font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:1px;}
+  .ccard .big{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-top:2px;}
+  .ccard .row{display:flex;justify-content:space-between;margin-top:18px;}
+  .ccard .prog{height:8px;border-radius:8px;background:rgba(255,255,255,.25);margin-top:16px;overflow:hidden;}
+  .ccard .prog>div{height:100%;background:#fff;border-radius:8px;}
+  .ccard .pct{font-size:11px;opacity:.9;margin-top:8px;display:flex;align-items:center;gap:5px;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .gamb{display:flex;align-items:center;justify-content:space-between;}
+  .gamb h2{display:flex;align-items:center;gap:8px;}
+  .gamb h2 .i{color:var(--muted);}
+  .gamb .net{font-size:24px;font-weight:800;}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:24px;}
+  @media(max-width:560px){.cards{grid-template-columns:1fr 1fr;}.two{grid-template-columns:1fr;}}
+  .foot{color:var(--muted);font-size:11px;text-align:center;margin-top:8px;}
+  .err{background:#fee2e2;color:#991b1b;border-radius:14px;padding:16px;font-size:13px;line-height:1.5;}
+  body.dark .err{background:#3a1414;color:#fecaca;}
+</style>
+</head>
+<body class="dark">
+<div class="wrap">
+  <header>
+    <h1><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg> My Finances</h1>
+    <button class="toggle" onclick="document.body.classList.toggle('dark')" title="Toggle theme" aria-label="Toggle theme">
+      <svg class="i sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      <svg class="i moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
+  </header>
+
+  <div class="monthbar">
+    <div class="arw" onclick="changeMonth(-1)"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></div>
+    <div class="mlabel" id="mlabel">Loading…</div>
+    <div class="arw" onclick="changeMonth(1)"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
+  </div>
+
+  <div id="dash"><div class="empty">Cargando datos del Google Sheet…</div></div>
+  <div class="foot">My Finances · live from Google Sheets</div>
+</div>
+
+<script>
+// ============ CONFIG ============
+const SHEET_ID = "1DtxGrjDdLu-ho6ilIwCZzpag840DzedT3nTjNNWvYNA";
+const SHEET_NAME = "Movements";
+const INITIAL_DEBT = 1758;     // Discover debt as of 2026-05-31
+const CREDIT_LIMIT = 1800;     // Discover credit limit
+
+const CATS = [
+  {name:"Clothing",       color:"#6366f1", icon:'<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>'},
+  {name:"Groceries",      color:"#22c55e", icon:'<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>'},
+  {name:"Entertainment",  color:"#f59e0b", icon:'<path d="M8 22h8"/><path d="M12 11v11"/><path d="m19 3-7 8-7-8Z"/>'},
+  {name:"Education",      color:"#06b6d4", icon:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'},
+  {name:"Dining out",     color:"#a855f7", icon:'<path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>'},
+  {name:"Other",         color:"#ec4899", icon:'<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>'},
+  {name:"Transport",      color:"#14b8a6", icon:'<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.6 3.2A3 3 0 0 0 2 14v2c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>'},
+  {name:"Small expenses", color:"#94a3b8", icon:'<path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>'}
+];
+const GAMB_ICON = '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3v2.5"/><path d="M12 18.5V21"/><path d="M3 12h2.5"/><path d="M18.5 12H21"/>';
+const GAMB_COLOR = "#f87171";
+
+const MONTHS = ["2026-05","2026-06","2026-07","2026-08","2026-09","2026-10","2026-11","2026-12","2027-01","2027-02","2027-03","2027-04","2027-05","2027-06"];
+const MONTH_NAMES = {"01":"January","02":"February","03":"March","04":"April","05":"May","06":"June","07":"July","08":"August","09":"September","10":"October","11":"November","12":"December"};
+
+let TX = [];          // all transactions
+let curIdx = MONTHS.indexOf("2026-06"); if(curIdx<0) curIdx=1;
+
+// ============ HELPERS ============
+const money = n => (n<0?"-$":"$") + Math.abs(Math.round(n)).toLocaleString("en-US");
+const svg = (path,color,size=18,extra="") => '<svg class="i" style="color:'+color+';'+extra+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+path+'</svg>';
+const prettyMonth = m => MONTH_NAMES[m.slice(5)] + " " + m.slice(0,4);
+
+// ============ FETCH ============
+async function load(){
+  const url = "https://docs.google.com/spreadsheets/d/"+SHEET_ID+"/gviz/tq?tqx=out:json&sheet="+encodeURIComponent(SHEET_NAME)+"&_="+Date.now();
+  try{
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}")+1));
+    const rows = json.table.rows || [];
+    const ym = val => {                       // normalize Month/Date to "yyyy-MM"
+      if(val==null) return "";
+      const s = String(val);
+      let m = s.match(/Date\((\d+),(\d+)/);    // gviz date e.g. Date(2026,5,2)
+      if(m) return m[1] + "-" + String(+m[2]+1).padStart(2,"0");
+      m = s.match(/(\d{4})-(\d{2})/);          // already yyyy-MM / yyyy-MM-dd
+      if(m) return m[1] + "-" + m[2];
+      return s;
+    };
+    TX = rows.map(r=>{
+      const c = r.c;
+      const g = i => (c[i] && c[i].v!=null) ? c[i].v : "";
+      return { month: ym(g(1)) || ym(g(0)), type:String(g(2)), amount:Number(g(3))||0, category:String(g(4)), card:String(g(5)) };
+    }).filter(t=>t.month);
+    render();
+  }catch(e){
+    document.getElementById("dash").innerHTML =
+      '<div class="err"><b>No pude leer el Google Sheet.</b><br>Asegúrate de que esté compartido como <b>"Cualquier persona con el enlace · Lector"</b>. '+
+      'Luego recarga esta página.<br><br><small>'+String(e)+'</small></div>';
+    document.getElementById("mlabel").textContent = "—";
+  }
+}
+
+// ============ COMPUTE ============
+function monthData(m){
+  const t = TX.filter(x=>x.month===m);
+  const sum = f => t.filter(f).reduce((s,x)=>s+x.amount,0);
+  const cats = {};
+  CATS.forEach(c=> cats[c.name] = sum(x=>x.type==="Expense" && x.category===c.name));
+  const won  = sum(x=>x.type==="Income"  && x.category==="Gambling");
+  const lost = sum(x=>x.type==="Expense" && x.category==="Gambling");
+  const gamblingNet = won - lost;
+  const gamblingLoss = Math.max(0, lost - won);
+  const income = sum(x=>x.type==="Income") - won;                       // regular income (no gambling wins)
+  const totalSpent = CATS.reduce((s,c)=>s+cats[c.name],0) + gamblingLoss;
+  const cashDebit = sum(x=>x.type==="Expense") - sum(x=>x.type==="Expense"&&x.card==="Discover") - lost;
+  const cardPay = sum(x=>x.type==="Debt payment" && x.card==="Discover");
+  const savings = income - cashDebit - cardPay + gamblingNet;
+  return {cats,income,won,lost,gamblingNet,gamblingLoss,totalSpent,cashDebit,cardPay,savings};
+}
+function cumulative(){
+  const sumAll = f => TX.filter(f).reduce((s,x)=>s+x.amount,0);
+  const purchases = sumAll(x=>x.type==="Expense" && x.card==="Discover");
+  const paid = sumAll(x=>x.type==="Debt payment" && x.card==="Discover");
+  const currentDebt = INITIAL_DEBT + purchases - paid;
+  let totalSavings = 0;
+  MONTHS.forEach(m=> totalSavings += monthData(m).savings);
+  return {currentDebt, available: CREDIT_LIMIT-currentDebt, paid, purchases, totalSavings};
+}
+
+// ============ RENDER ============
+function changeMonth(d){ curIdx = Math.max(0, Math.min(MONTHS.length-1, curIdx+d)); render(); }
+
+function render(){
+  const m = MONTHS[curIdx];
+  document.getElementById("mlabel").textContent = prettyMonth(m);
+  const d = monthData(m), cum = cumulative();
+
+  // spending items for pie/bars (8 cats + gambling if net loss)
+  let items = CATS.map(c=>({name:c.name,icon:c.icon,color:c.color,amt:d.cats[c.name]}));
+  if(d.gamblingLoss>0) items.push({name:"Gambling",icon:GAMB_ICON,color:GAMB_COLOR,amt:d.gamblingLoss});
+  items = items.filter(x=>x.amt>0);
+  const totalForPct = items.reduce((s,x)=>s+x.amt,0) || 1;
+
+  // donut
+  let acc=0, stops=[];
+  items.forEach(x=>{ const a=acc/totalForPct*360; acc+=x.amt; stops.push(x.color+" "+a.toFixed(2)+"deg "+(acc/totalForPct*360).toFixed(2)+"deg"); });
+  const donutBg = items.length ? "conic-gradient("+stops.join(",")+")" : "var(--line)";
+
+  // legend (by %)
+  const legend = items.map(x=>'<div class="lg">'+svg(x.icon,x.color)+x.name+'<span class="amt">'+Math.round(x.amt/totalForPct*100)+'%</span></div>').join("");
+
+  // breakdown bars (by $), sorted desc
+  const sorted=[...items].sort((a,b)=>b.amt-a.amt);
+  const maxAmt = sorted.length? sorted[0].amt : 1;
+  const bars = sorted.map(x=>{
+    const w = (x.amt/totalForPct*100).toFixed(0);
+    const fill = x.name==="Gambling" ? 'background:linear-gradient(90deg,#f87171,#fca5a5);' : '';
+    return '<div class="bar-row"><div class="name">'+svg(x.icon,x.color)+x.name+'</div><div class="bar-track"><div class="bar-fill" style="width:'+w+'%;'+fill+'"></div></div><div class="amt">'+money(x.amt)+'</div></div>';
+  }).join("");
+
+  const noSpend = items.length===0;
+  const paidPct = CREDIT_LIMIT>0 ? Math.max(0,Math.min(100, cum.paid/(INITIAL_DEBT+cum.purchases||1)*100)) : 0;
+
+  const wallet='<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>';
+  const trend='<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>';
+  const bag='<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>';
+  const note='<rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01"/><path d="M18 12h.01"/>';
+
+  document.getElementById("dash").innerHTML = `
+  <div class="cards">
+    <div class="stat"><div class="ic g">${svg(wallet,'currentColor')}</div><div class="lbl">Savings this month</div><div class="val ${d.savings>=0?'green':''}">${money(d.savings)}</div></div>
+    <div class="stat"><div class="ic">${svg(trend,'currentColor')}</div><div class="lbl">Income</div><div class="val">${money(d.income)}</div></div>
+    <div class="stat"><div class="ic">${svg(bag,'currentColor')}</div><div class="lbl">Total spent</div><div class="val">${money(d.totalSpent)}</div></div>
+  </div>
+
+  <div class="savestrip">
+    <div class="lbl">${svg(wallet,'currentColor')} Total savings (all months)</div>
+    <div class="big">${money(cum.totalSavings)}</div>
+  </div>
+
+  <div class="panel">
+    <h2>Where your money goes</h2>
+    <div class="hint">Spending by category · ${prettyMonth(m)}</div>
+    ${ noSpend ? '<div class="empty">No spending recorded this month yet.</div>' :
+    `<div class="donut-wrap">
+      <div class="donut" style="background:${donutBg}"><div class="hole"><span class="t">${money(d.totalSpent)}</span><span class="s">spent</span></div></div>
+      <div class="legend">${legend}</div>
+    </div>`}
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h2>Category breakdown</h2>
+      <div class="hint">Amount spent in each (biggest first)</div>
+      ${ noSpend ? '<div class="empty">—</div>' : '<div class="bars">'+bars+'</div>' }
+    </div>
+
+    <div class="panel">
+      <h2>Discover card</h2>
+      <div class="hint">Running balance (carries over)</div>
+      <div class="ccard">
+        <div class="brand">DISCOVER</div><div class="chip"></div>
+        <div class="ln">Current debt</div><div class="big">${money(cum.currentDebt)}</div>
+        <div class="row">
+          <div><div class="ln">Available credit</div><div style="font-weight:800;font-size:16px;margin-top:2px;">${money(cum.available)}</div></div>
+          <div style="text-align:right;"><div class="ln">Limit</div><div style="font-weight:800;font-size:16px;margin-top:2px;">${money(CREDIT_LIMIT)}</div></div>
+        </div>
+        <div class="prog"><div style="width:${paidPct.toFixed(1)}%"></div></div>
+        <div class="pct">${svg(note,'currentColor',14,'width:14px;height:14px;')} ${money(d.cardPay)} paid this month · ${money(cum.currentDebt)} to go</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel gamb">
+    <div>
+      <h2>${svg(GAMB_ICON,'var(--muted)')} Gambling</h2>
+      <div class="hint" style="margin:0;">Won ${money(d.won)} · Lost ${money(d.lost)} · ${d.gamblingNet>=0?"you're up this month":"net loss this month"}</div>
+    </div>
+    <div class="net" style="color:${d.gamblingNet>=0?'var(--accent2)':'var(--danger)'};">${d.gamblingNet>=0?'+':'−'}${money(Math.abs(d.gamblingNet))}</div>
+  </div>`;
+}
+
+load();
+// auto-refresh when returning to the app (e.g. back from Telegram) — no need to close it
+function refreshOnReturn(){ if(!document.hidden) load(); }
+document.addEventListener("visibilitychange", refreshOnReturn);
+window.addEventListener("focus", refreshOnReturn);
+window.addEventListener("pageshow", refreshOnReturn);
+</script>
+</body>
+</html>

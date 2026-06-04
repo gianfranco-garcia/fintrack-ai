@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinTrack AI — Architecture</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  body{background:#0e1422;color:#eaf0ff;padding:48px 28px;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
+  h1{font-size:26px;font-weight:800;letter-spacing:-.4px;margin-bottom:4px;}
+  .sub{color:#9aa6c2;font-size:14px;margin-bottom:40px;text-align:center;max-width:560px;}
+  .flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;justify-content:center;}
+  .box{background:#161e30;border:1px solid #243049;border-radius:18px;padding:20px 18px;width:190px;text-align:center;box-shadow:0 8px 26px rgba(0,0,0,.35);}
+  .box .ic{font-size:30px;}
+  .box .t{font-weight:800;font-size:15px;margin-top:10px;}
+  .box .d{color:#9aa6c2;font-size:12px;margin-top:5px;line-height:1.35;}
+  .arrow{display:flex;align-items:center;justify-content:center;color:#3b82f6;font-size:26px;font-weight:800;padding:0 6px;}
+  .tag{margin-top:8px;display:inline-block;background:rgba(59,130,246,.16);color:#60a5fa;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px;}
+  .stack{margin-top:40px;color:#9aa6c2;font-size:12px;text-align:center;}
+  .stack b{color:#eaf0ff;}
+  @media(max-width:820px){.flow{flex-direction:column;}.arrow{transform:rotate(90deg);padding:8px 0;}}
+</style>
+</head>
+<body>
+  <h1>💸 FinTrack AI — System Architecture</h1>
+  <div class="sub">An end-to-end personal finance tracker: log expenses in natural language by chat, an AI structures them, and a live dashboard visualizes everything.</div>
+
+  <div class="flow">
+    <div class="box">
+      <div class="ic">📱</div>
+      <div class="t">Telegram Bot</div>
+      <div class="d">You text in plain language<br>"40 night out wells"</div>
+      <div class="tag">Input</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box">
+      <div class="ic">🧠</div>
+      <div class="t">n8n + Claude Sonnet</div>
+      <div class="d">AI interprets the message into structured data (type, amount, category, card)</div>
+      <div class="tag">AI parsing</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box">
+      <div class="ic">📊</div>
+      <div class="t">Google Sheets</div>
+      <div class="d">Stores transactions &amp; computes savings, debt &amp; net gambling</div>
+      <div class="tag">Database</div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="box">
+      <div class="ic">🌐</div>
+      <div class="t">Web App</div>
+      <div class="d">Live dashboard (Netlify) — charts, savings, debt, installable on phone</div>
+      <div class="tag">Visualization</div>
+    </div>
+  </div>
+
+  <div class="stack"><b>Tech:</b> n8n · Claude Sonnet 4.6 (LLM) · Google Sheets · JavaScript / HTML / CSS · Netlify</div>
+</body>
+</html>

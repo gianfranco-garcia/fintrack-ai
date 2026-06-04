@@ -3,13 +3,13 @@
 > Log your expenses by chatting in natural language; an LLM parses them and a live dashboard visualizes your spending, savings, and debt — in real time.
 
 ## Executive Summary
-FinTrack AI is an end-to-end personal finance system that turns a plain-language text message into a live, visual dashboard. Instead of manual spreadsheets, I text what I spent — e.g. *"200 shoes wells"* — and an AI logs, categorizes, and visualizes it automatically, tracking spending, savings, and credit-card debt in real time. I built the whole system solo: the data pipeline, the AI integration, the financial logic, and the deployed, phone-ready app.
+FinTrack AI is an end-to-end personal finance system that turns a plain-language text message into a live, visual dashboard. Instead of manual spreadsheets, I text what I spent — e.g. *"100 restaurant wells"* — and an AI logs, categorizes, and visualizes it automatically, tracking spending, savings, and credit-card debt in real time. I built the whole system solo: the data pipeline, the AI integration, the financial logic, and the deployed, phone-ready app.
 
 ## Problem
 Tracking personal finances is tedious — manual spreadsheets and clunky apps. I wanted something effortless: just text what I spent, in plain language, and see it all in a clean dashboard.
 
 ## Solution
-An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"200 shoes wells"*), an AI (Claude Sonnet 4.6) interprets it into structured data, stores it in Google Sheets, and a custom web app visualizes everything live — accessible as an app on my phone.
+An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"100 restaurant wells"*), an AI (Claude Sonnet 4.6) interprets it into structured data, stores it in Google Sheets, and a custom web app visualizes everything live — accessible as an app on my phone.
 
 ## Architecture
 **Telegram → n8n + Claude Sonnet 4.6 → Google Sheets → Web App (Netlify)**

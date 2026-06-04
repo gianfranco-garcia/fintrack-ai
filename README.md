@@ -34,9 +34,9 @@ An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"2
 - **Deploying** a static web app and making it a phone-installable PWA
 
 ## Links
+- 🎥 **Demo video (57s):** https://www.youtube.com/watch?v=D5Ww1O485H0
 - 🔗 **Live dashboard (sample data):** https://effulgent-marigold-d342e1.netlify.app
 - 💻 **Source code:** this repository (`webapp.html`)
-- 🎥 **Demo video:** _coming soon_
 
 ---
 *Built by Gianfranco García — Business Analytics @ FIU*

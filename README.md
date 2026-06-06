@@ -24,20 +24,20 @@ An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"1
 
 ## Key features
 - 🗣️ **Natural-language logging** (English + Spanish) via Telegram chat
-- 🤖 **AI categorization** into 9 categories with reliable structured output
-- 📊 **Live dashboard:** spending breakdown (donut + bars), monthly + cumulative savings, Discover credit-card debt tracking with available credit, and **intelligent gambling P&L** (only counts as spending on a net loss)
+- 🤖 **AI categorization** into 9 spending categories, straight from the chat message
+- 📊 **Live dashboard:** spending breakdown (donut + bars), monthly + cumulative savings, Discover credit-card debt tracking with available credit, and a **conditional net-P&L rule** (an activity only counts as spending on a net loss)
 - 🌗 **Dark/light theme**, mobile-installable (add to home screen)
 - 🗓️ **Month-by-month navigation**
 
 ## What I built / learned
 - Designed a full **data pipeline**: input → AI parsing → storage → visualization
 - **Prompt engineering** for reliable, structured JSON output (and handling edge cases, e.g. quantity vs. price)
-- **Data modeling & business logic** (savings, debt, net gambling), separating the **raw ledger** (Google Sheets stores facts) from the **presentation layer** (the app interprets them) — a clean, professional architecture
+- **Data modeling & business logic** (savings, debt, conditional net-P&L), separating the **raw ledger** (Google Sheets stores facts) from the **presentation layer** (the app interprets them), so the stored data stays trustworthy even when I change how the dashboard looks
 - Fetching & parsing **Google Sheets data** in a web app (incl. the date-parsing gotcha)
 - **Deploying** a static web app and making it a phone-installable PWA
 
 ## Impact & Results
-- ⏱️ **Removes the #1 reason budgeting fails — friction.** Logging an expense takes a ~5-second text instead of minutes of manual spreadsheet entry.
+- ⏱️ **Tackles the biggest reason budgeting fails — friction.** Logging an expense takes a ~5-second text instead of minutes of manual spreadsheet entry.
 - 🔄 **A real, daily-used system, not a demo** — reliable enough that I track my own finances with it every day.
 - 🧠 **Reliable AI output:** every message is parsed into structured, validated data and auto-sorted into 9 spending categories (handling tricky edge cases like quantity vs. price).
 - 🏗️ **Demonstrates the full data lifecycle** — ingestion → AI parsing → data modeling → storage → visualization → deployment — the same end-to-end flow a Data/Business Analyst works across.

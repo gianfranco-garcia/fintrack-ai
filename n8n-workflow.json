@@ -1,0 +1,146 @@
+{
+  "name": "Finanzas - Tracker de Gastos",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "89e2545b-0b3c-4e79-9fe8-94f482d93d8d",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [240, 304]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Eres un asistente que interpreta mensajes de finanzas personales. El usuario puede escribir en ESPANOL o en INGLES. Devuelve SOLO el JSON pedido, con las ETIQUETAS siempre en INGLES.\n\nCampos a extraer:\n- tipo (en ingles): uno de \"Expense\", \"Income\", \"Debt payment\".\n- monto: el numero que aparece en el mensaje es SIEMPRE el monto en dolares (USD). Copialo tal cual. NUNCA lo interpretes como cantidad de unidades y NUNCA inventes ni estimes un precio. Ej: \"3 monster\" -> 3. Si no hay numero, usa 0.\n- categoria (en ingles): una de Groceries, Dining out, Small expenses, Transport, Entertainment, Gambling, Clothing, Education, Other. Vacia (\"\") si el tipo es Income o Debt payment, EXCEPTO si es una ganancia de poker/apuestas: usa \"Gambling\".\n- tarjeta: una de Discover, Wells Fargo, BCP. Vacia (\"\") si no se menciona.\n- descripcion: texto corto en ingles que resuma el movimiento.\n\nReglas de tipo (en orden de prioridad):\n- \"pago\"/\"pague\"/\"paid\"/\"payment\" junto a una tarjeta -> \"Debt payment\".\n- \"gane\"/\"ganancia\"/\"cobre\"/\"won\"/\"win\"/\"profit\" en poker/apuestas/casino/bet/betting -> \"Income\" con categoria \"Gambling\".\n- \"perdi\"/\"lost\" en poker/apuestas/casino/bet/betting -> \"Expense\" con categoria \"Gambling\".\n- \"ingreso\"/\"mensualidad\"/\"me pagaron\"/\"salario\"/\"income\"/\"allowance\"/\"got paid\"/\"salary\" -> \"Income\". Para \"mensualidad\"/\"allowance\" la descripcion debe decir \"Monthly allowance\", NUNCA \"salary\".\n- En cualquier otro caso -> \"Expense\".\n\nVariantes de tarjeta: discover/disc -> Discover; wells/wf/wells fargo -> Wells Fargo; bcp/peru -> BCP.\n\nGuia de categorias (palabras en ESPANOL o INGLES -> categoria en INGLES):\n- mercado/supermercado/groceries/grocery/supermarket -> Groceries\n- restaurante/comida rapida/uber eats/delivery/almuerzo/restaurant/dining/lunch/dinner/eating out -> Dining out\n- monster/red bull/coca-cola/gaseosa/gatorade/powerade/energizante/chocolate/golosina/frituras/snacks/chucherias/cafe/candy/chips/energy drink/coffee/soda -> Small expenses (compras chicas de bebida o snack de impulso que NO son mercado completo ni restaurante)\n- uber/bus/pasaje/taxi/gasolina/transporte/transport/transportation/gas/ride/fare -> Transport\n- bar/juerga/juergas/fiesta/weed/trago/party/night out/nightout/clubbing/drinks/going out -> Entertainment\n- poker/apuesta/apuestas deportivas/casino/bet/betting/gambling/sports bet -> Gambling\n- ropa/camisa/pantalon/polo/zapatos/zapatillas/gorra/lentes/reloj/accesorios/clothes/clothing/shirt/shoes/pants/jacket -> Clothing\n- curso/libro/libros/universidad/clase/matricula/books/book/course/class/tuition/education -> Education\n- cualquier otra cosa -> Other\n\nLa moneda siempre es USD.",
+          "enableStreaming": false
+        }
+      },
+      "id": "0cc870af-d38d-46a9-8990-498661a8b35e",
+      "name": "Interpretar Mensaje",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [464, 304]
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{ \"tipo\": \"Expense\", \"monto\": 12, \"categoria\": \"Dining out\", \"tarjeta\": \"Discover\", \"descripcion\": \"Burger King\" }"
+      },
+      "id": "fa209c6d-f4c8-42bc-9eeb-db6c0a1a811c",
+      "name": "Parser Movimiento",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [608, 528]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "f-fecha", "name": "Fecha", "value": "={{ $now.toFormat(\"yyyy-MM-dd\") }}", "type": "string" },
+            { "id": "f-mes", "name": "Mes", "value": "={{ $now.toFormat(\"yyyy-MM\") }}", "type": "string" },
+            { "id": "f-tipo", "name": "Tipo", "value": "={{ $json.output.tipo }}", "type": "string" },
+            { "id": "f-monto", "name": "Monto", "value": "={{ $json.output.monto }}", "type": "number" },
+            { "id": "f-categoria", "name": "Categoria", "value": "={{ $json.output.categoria }}", "type": "string" },
+            { "id": "f-tarjeta", "name": "Tarjeta", "value": "={{ $json.output.tarjeta }}", "type": "string" },
+            { "id": "f-desc", "name": "Descripcion", "value": "={{ $json.output.descripcion }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5727c5e3-4d42-4f7b-a121-dc6b258fd582",
+      "name": "Preparar Fila",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [816, 304]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_GOOGLE_SHEET_ID"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Movements"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.Fecha }}",
+            "Month": "={{ $json.Mes }}",
+            "Type": "={{ $json.Tipo }}",
+            "Amount": "={{ $json.Monto }}",
+            "Category": "={{ $json.Categoria }}",
+            "Card": "={{ $json.Tarjeta }}",
+            "Description": "={{ $json.Descripcion }}"
+          },
+          "schema": [
+            { "id": "Date", "displayName": "Date", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Month", "displayName": "Month", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Type", "displayName": "Type", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Amount", "displayName": "Amount", "required": false, "defaultMatch": false, "display": true, "type": "number", "canBeUsedToMatch": true },
+            { "id": "Category", "displayName": "Category", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Card", "displayName": "Card", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Description", "displayName": "Description", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        },
+        "options": { "useAppend": true }
+      },
+      "id": "273d0625-c639-4117-9153-60035558cc8b",
+      "name": "Guardar en Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1040, 304]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=✅ {{ $('Preparar Fila').item.json.Tipo }} ${{ $('Preparar Fila').item.json.Monto }}{{ $('Preparar Fila').item.json.Categoria ? \" · \" + $('Preparar Fila').item.json.Categoria : \"\" }}{{ $('Preparar Fila').item.json.Tarjeta ? \" · \" + $('Preparar Fila').item.json.Tarjeta : \"\" }}",
+        "additionalFields": { "appendAttribution": false }
+      },
+      "id": "d027143c-be93-4199-9fb1-004c8dcb7c94",
+      "name": "Confirmar",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1264, 304]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-6",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "id": "b9736698-1a3b-4a62-b9e3-97c551a89ad2",
+      "name": "Claude Sonnet",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.5,
+      "position": [480, 528]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": { "main": [[{ "node": "Interpretar Mensaje", "type": "main", "index": 0 }]] },
+    "Interpretar Mensaje": { "main": [[{ "node": "Preparar Fila", "type": "main", "index": 0 }]] },
+    "Parser Movimiento": { "ai_outputParser": [[{ "node": "Interpretar Mensaje", "type": "ai_outputParser", "index": 0 }]] },
+    "Preparar Fila": { "main": [[{ "node": "Guardar en Sheet", "type": "main", "index": 0 }]] },
+    "Guardar en Sheet": { "main": [[{ "node": "Confirmar", "type": "main", "index": 0 }]] },
+    "Claude Sonnet": { "ai_languageModel": [[{ "node": "Interpretar Mensaje", "type": "ai_languageModel", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {},
+  "meta": {
+    "description": "Telegram bot that turns a natural-language finance message into a structured row: Telegram Trigger -> AI agent (Claude Sonnet 4.6 + structured output parser) -> Set node -> Google Sheets append -> Telegram confirmation. Sanitized for public sharing: real Google Sheet ID replaced with YOUR_GOOGLE_SHEET_ID, no credentials included."
+  }
+}

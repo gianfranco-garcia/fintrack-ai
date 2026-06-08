@@ -15,6 +15,8 @@ An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"1
 **Telegram → n8n + Claude Sonnet 4.6 → Google Sheets → Web App (Netlify)**
 (See `architecture-diagram.html` for the visual.)
 
+The complete automation is in **[`n8n-workflow.json`](n8n-workflow.json)** — the exportable n8n workflow (importable into any n8n instance), including the AI agent's full categorization prompt. Sanitized for sharing: the real Google Sheet ID is replaced with a placeholder and no credentials are included.
+
 ## Tech stack
 - **n8n** — workflow automation (the ingestion pipeline)
 - **Claude Sonnet 4.6** — LLM that interprets natural-language messages into JSON
@@ -45,7 +47,7 @@ An **end-to-end system**: I message a Telegram bot in natural language (e.g. *"1
 ## Links
 - 🎥 **Demo video (57s):** https://www.youtube.com/watch?v=D5Ww1O485H0
 - 🔗 **Live dashboard (sample data):** https://effulgent-marigold-d342e1.netlify.app
-- 💻 **Source code:** this repository (`webapp.html`)
+- 💻 **Source code:** this repository (`webapp.html` for the app, `n8n-workflow.json` for the automation pipeline)
 
 ---
 *Built by Gianfranco García — Business Analytics @ FIU*
